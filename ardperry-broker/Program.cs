@@ -16,10 +16,12 @@ namespace ardperry_broker {
 		static void Main(string[] args) {
 
 
+
 			var config = GetConfig();
 
 			sendSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 			serial = new SerialPort(config["SerialPort"]);
+			serial.NewLine = "\n";
 			serial.DataReceived += Serial_DataReceived;
 			sendSocket.Connect(new IPEndPoint(IPAddress.Parse(config["ServerIP"]), int.Parse(config["ServerPort"])));
 			serial.Open();
@@ -36,9 +38,11 @@ namespace ardperry_broker {
 
 		static void Serial_DataReceived(object sender, SerialDataReceivedEventArgs e) {
 			
-			string readString = serial.ReadLine();
-			Console.WriteLine("Sending " + readString);
-			sendSocket.Send(Encoding.UTF8.GetBytes($"1#{readString}"));	
+			string readString = serial.ReadLine().Replace("\r", "");
+			int value = int.Parse(readString);
+
+			Console.WriteLine("Sending " + Math.Round((float)value / 1024 * 100));
+			sendSocket.Send(Encoding.UTF8.GetBytes($"1#{(float)value / 1024 * 100}"));	
 		}
 
 		static Dictionary<string, string> GetConfig() {
