@@ -41,8 +41,10 @@ namespace ardperry_broker {
 			string readString = serial.ReadLine().Replace("\r", "");
 			int value = int.Parse(readString);
 
-			Console.WriteLine("Sending " + Math.Round((float)value / 1024 * 100));
-			sendSocket.Send(Encoding.UTF8.GetBytes($"1#{(float)value / 1024 * 100}"));	
+			int sendValue = (int)Math.Round((float)value / 1024 * 100);
+
+			Console.WriteLine("Sending " + sendValue);
+			sendSocket.Send(Encoding.UTF8.GetBytes($"1#{sendValue}"));	
 		}
 
 		static Dictionary<string, string> GetConfig() {
