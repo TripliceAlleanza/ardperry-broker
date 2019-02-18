@@ -62,6 +62,8 @@ namespace ardperry_broker {
 				sendSocket.Send(Encoding.UTF8.GetBytes($"1#{sendValue}"));
 			} catch(SocketException ex) {
 				Console.WriteLine("Cannot reach server. " + ex.Message);
+				serial.Close();
+				sendSocket.Close();
 			}
 		}
 
